@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author User
+ * @author User Adnan Ahmed
  */
 public class BusTicketManagement_System extends Application {
     
