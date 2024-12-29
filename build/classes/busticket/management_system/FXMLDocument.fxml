@@ -12,7 +12,7 @@
 
 <AnchorPane id="AnchorPane" fx:id="main_form" prefHeight="769.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="busticket.management_system.FXMLDocumentController">
    <children>
-      <ImageView fitHeight="762.0" fitWidth="1014.0" layoutX="2.0" layoutY="3.0" pickOnBounds="true">
+      <ImageView fx:id="usernamenew" fitHeight="762.0" fitWidth="1014.0" layoutX="2.0" layoutY="3.0" pickOnBounds="true">
          <image>
             <Image url="@Image/a4820ecb-c633-491e-81c0-c065a8400252.jpeg" />
          </image>
@@ -24,8 +24,8 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <PasswordField fx:id="passwordin" layoutX="69.0" layoutY="163.0" prefHeight="26.0" prefWidth="199.0" promptText="Password" />
-            <Button fx:id="login_in" layoutX="128.0" layoutY="213.0" mnemonicParsing="false" style="-fx-background-color: GREEN; -fx-background-radius: 10;" text="Login">
+            <PasswordField fx:id="password" layoutX="69.0" layoutY="163.0" prefHeight="26.0" prefWidth="199.0" promptText="Password" />
+            <Button fx:id="login" layoutX="128.0" layoutY="213.0" mnemonicParsing="false" onAction="#login" style="-fx-background-color: GREEN; -fx-background-radius: 10;" text="Login">
                <font>
                   <Font size="16.0" />
                </font>
@@ -40,7 +40,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <TextField fx:id="usernamenew" layoutX="72.0" layoutY="127.0" prefHeight="26.0" prefWidth="193.0" promptText="username" />
+            <TextField fx:id="username" layoutX="72.0" layoutY="127.0" prefHeight="26.0" prefWidth="193.0" promptText="username" />
             <Button fx:id="close" layoutX="284.0" layoutY="14.0" mnemonicParsing="false" onAction="#close" style="-fx-background-color: red;" text="X" />
          </children>
       </Pane>

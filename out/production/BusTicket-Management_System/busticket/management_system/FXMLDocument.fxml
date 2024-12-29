@@ -24,8 +24,8 @@
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <PasswordField fx:id="password" layoutX="69.0" layoutY="163.0" prefHeight="26.0" prefWidth="199.0" promptText="Password" />
-            <Button fx:id="login" layoutX="128.0" layoutY="213.0" mnemonicParsing="false" onAction="#login" style="-fx-background-color: GREEN; -fx-background-radius: 10;" text="Login">
+            <PasswordField fx:id="passwordin" layoutX="69.0" layoutY="163.0" prefHeight="26.0" prefWidth="199.0" promptText="Password" />
+            <Button fx:id="login_in" layoutX="128.0" layoutY="213.0" mnemonicParsing="false" style="-fx-background-color: GREEN; -fx-background-radius: 10;" text="Login">
                <font>
                   <Font size="16.0" />
                </font>
@@ -40,7 +40,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <TextField fx:id="username" layoutX="72.0" layoutY="127.0" prefHeight="26.0" prefWidth="193.0" promptText="username" />
+            <TextField fx:id="usernamenew" layoutX="72.0" layoutY="127.0" prefHeight="26.0" prefWidth="193.0" promptText="username" />
             <Button fx:id="close" layoutX="284.0" layoutY="14.0" mnemonicParsing="false" onAction="#close" style="-fx-background-color: red;" text="X" />
          </children>
       </Pane>
