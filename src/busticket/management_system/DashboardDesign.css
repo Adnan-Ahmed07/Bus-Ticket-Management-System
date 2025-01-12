@@ -6,6 +6,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Created on : Jan 4, 2025, 1:19:35 PM
     Author     : Adnan Ahmed
 */
+.close{
+    -fx-background-color:transparent;
+    -fx-cursor:hand;
+}
+.close:hover{
+    -fx-background-color:#dd4763;
+}
+
+.minimize{
+    -fx-background-color:transparent;
+    -fx-cursor:hand;
+}
+.minimize:hover{
+    -fx-background-color:#ddd;
+}
 .top-form{
     -fx-background-color:#fff;
     -fx-border-color:#000;
