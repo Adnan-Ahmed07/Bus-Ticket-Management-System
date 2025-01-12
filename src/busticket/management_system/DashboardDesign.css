@@ -158,3 +158,70 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 .table-view .column-header .label{
     -fx-text-fill:#fff;
 }
+.info-card{
+    -fx-background-color:linear-gradient(to bottom right, #57252a, #29643f);
+    -fx-background-radius:0px 5px 5px 0px;
+}
+.io-textfield{
+    -fx-background-color:#fff;
+    -fx-background-radius:5px;
+    -fx-font-family:"Tahoma";
+    -fx-font-size:13px;
+}
+
+.select-btn{
+    -fx-background-color:#3e89bb;
+    -fx-background-radius:10px 5px 10px 5px;
+    -fx-cursor:hand;
+    -fx-font-size:14px;
+    -fx-font-family:"Arial";
+    -fx-text-fill: #fff;
+}
+.select-btn:hover{
+    -fx-background-color:#399ad6;
+}
+
+.io-reset-btn{
+    -fx-background-color:#933eb5;
+    -fx-background-radius:10px 5px 10px 5px;
+    -fx-cursor:hand;
+    -fx-font-size:14px;
+    -fx-font-family:"Arial";
+    -fx-text-fill: #fff;
+}
+.io-reset-btn:hover{
+    -fx-background-color:#8a34d1;
+}
+.label-info{
+    -fx-border-color:linear-gradient(to bottom right, #753036, #3c8256);
+    -fx-border-radius:15px 5px 15px 5px;
+    -fx-font-size:14px;
+    -fx-font-family:"Tahoma";
+    -fx-border-width:2px;
+    -fx-padding:0px 0px 0px 10px;
+}
+.Pay-btn{ 
+  -fx-background-color:#d5006d; /* bKash Pink */
+    -fx-background-radius:10px 5px 10px 5px;
+    -fx-cursor:hand;
+    -fx-font-size:14px;
+    -fx-font-family:"Arial";
+    -fx-text-fill: #fff;
+
+}
+.Pay-btn:hover{ 
+ 
+-fx-background-color:#c5005c;
+}
+
+.receipt-btn{
+    -fx-background-color:#a7753f;
+    -fx-background-radius:10px 5px 10px 5px;
+    -fx-cursor:hand;
+    -fx-font-size:14px;
+    -fx-font-family:"Arial";
+    -fx-text-fill: #fff;
+}
+.receipt-btn:hover{
+    -fx-background-color:#bf7f3a;
+}
