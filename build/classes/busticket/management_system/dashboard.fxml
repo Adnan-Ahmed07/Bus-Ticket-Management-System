@@ -29,8 +29,8 @@
                      <children>
                         <AnchorPane layoutX="3.2" layoutY="20.8" prefHeight="82.0" prefWidth="1097.0" styleClass="top-form" stylesheets="@DashboardDesign.css" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="21.0">
                            <children>
-                              <Button fx:id="close" layoutX="1052.0" layoutY="10.0" mnemonicParsing="false" onAction="#close" prefHeight="25.0" prefWidth="34.0" text="X" />
-                              <Button fx:id="minimize" layoutX="1010.0" layoutY="10.0" mnemonicParsing="false" onAction="#minimize" prefHeight="25.0" prefWidth="34.0" text="-" />
+                              <Button fx:id="close" layoutX="1052.0" layoutY="10.0" mnemonicParsing="false" onAction="#close" prefHeight="25.0" prefWidth="34.0" styleClass="close" stylesheets="@DashboardDesign.css" text="X" />
+                              <Button fx:id="minimize" layoutX="1010.0" layoutY="10.0" mnemonicParsing="false" onAction="#minimize" prefHeight="25.0" prefWidth="34.0" styleClass="minimize" stylesheets="@DashboardDesign.css" text="-" />
                               <ImageView fitHeight="84.0" fitWidth="110.0" layoutX="14.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@Image/logo.jpg" />
@@ -89,8 +89,8 @@
                               <Image url="@Image/Customar.png" />
                            </image>
                         </ImageView>
-                        <Button fx:id="logout" layoutX="32.0" layoutY="444.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" styleClass="logout-btn" stylesheets="@DashboardDesign.css" text="--" />
-                        <ImageView fitHeight="23.0" fitWidth="47.0" layoutX="58.0" layoutY="445.0" pickOnBounds="true" preserveRatio="true" styleClass="logout-btn">
+                        <Button fx:id="logout" layoutX="32.0" layoutY="444.0" mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="74.0" styleClass="logout-btn" stylesheets="@DashboardDesign.css" text="--" />
+                        <ImageView fitHeight="23.0" fitWidth="47.0" layoutX="42.0" layoutY="445.0" pickOnBounds="true" preserveRatio="true" styleClass="logout-btn">
                            <image>
                               <Image url="@Image/sign_out.png" />
                            </image>
