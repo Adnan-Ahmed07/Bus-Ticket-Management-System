@@ -3,12 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package busticket.management_system;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.Statement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -30,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -62,25 +65,28 @@ public class DashboardController implements Initializable {
     private TextField availableB_busID;
 
     @FXML
-    private TableColumn<?, ?> availableB_coi_busID;
+    private TableColumn<busData, String> availableB_col_busID;
 
     @FXML
-    private TableColumn<?, ?> availableB_coi_date;
+    private TableColumn<busData, String> availableB_col_date;
 
     @FXML
-    private TableColumn<?, ?> availableB_coi_location;
+    private TableColumn<busData, String> availableB_col_location;
 
     @FXML
-    private TableColumn<?, ?> availableB_coi_price;
+    private TableColumn<busData, String> availableB_col_price;
 
     @FXML
-    private TableColumn<?, ?> availableB_coi_type;
+    private TableColumn<busData, String> availableB_col_status;
 
     @FXML
     private DatePicker availableB_date;
+    
 
     @FXML
     private Button availableB_deleteBtn;
+     @FXML
+    private TableView<busData> availableB_tableView;
 
     @FXML
     private AnchorPane availableB_form;
@@ -255,6 +261,165 @@ public class DashboardController implements Initializable {
     private ResultSet result;
     private Statement statement;
     
+    public void availableBusAdd() { 
+    
+    String addData = "INSERT INTO bus (bus_id,location,status,price,date) VALUES(?,?,?,?,?)";
+    
+    
+    
+    connect = database.connectDb();
+
+        try {
+
+            Alert alert;
+
+
+            if (availableB_busID.getText().isEmpty()
+                    || availableB_location.getText().isEmpty()
+                    || availableB_status.getSelectionModel().getSelectedItem() == null
+                    || availableB_price.getText().isEmpty()
+                    || availableB_date.getValue() == null) {
+
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill all blank fields");
+                alert.showAndWait();
+
+            } else {
+
+
+                String check = "SELECT bus_id FROM bus WHERE bus_id = '"
+                        + availableB_busID.getText() + "'";
+
+                statement = connect.createStatement();
+                result = statement.executeQuery(check);
+
+                if (result.next()) {
+
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Bus ID: " + availableB_busID.getText() + " was already exist!");
+                    alert.showAndWait();
+
+                } else {
+
+                    prepare = connect.prepareStatement(addData);
+                    prepare.setString(1, availableB_busID.getText());
+                    prepare.setString(2, availableB_location.getText());
+                    prepare.setString(3, (String) availableB_status.getSelectionModel().getSelectedItem());
+                    prepare.setString(4, availableB_price.getText());
+                    prepare.setString(5, String.valueOf(availableB_date.getValue()));
+
+                    prepare.executeUpdate();
+
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Information Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Successfully Added!");
+                    alert.showAndWait();
+
+
+                    availableBShowBusData();
+                    availableBusReset();
+                   
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
+    }
+    
+     public void availableBusUpdate() {
+
+        String updateData = "UPDATE bus SET location = '"
+                + availableB_location.getText() + "', status = '"
+                + availableB_status.getSelectionModel().getSelectedItem()
+                + "', price = '" + availableB_price.getText()
+                + "', date = '" + availableB_date.getValue()
+                + "' WHERE bus_id = '" + availableB_busID.getText() + "'";
+
+        connect = database.connectDb();
+
+        Alert alert;
+
+        try {
+
+            if (availableB_busID.getText().isEmpty()
+                    || availableB_location.getText().isEmpty()
+                    || availableB_status.getSelectionModel().getSelectedItem() == null
+                    || availableB_price.getText().isEmpty()
+                    || availableB_date.getValue() == null) {
+
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please select the item first");
+                alert.showAndWait();
+
+            } else {
+
+                alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Are you sure you want to UPDATE Bus ID: " + availableB_busID.getText() + "?");
+
+                Optional<ButtonType> option = alert.showAndWait();
+
+                if (option.get().equals(ButtonType.OK)) {
+
+                    prepare = connect.prepareStatement(updateData);
+                    prepare.executeUpdate();
+                    
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Information Message");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Successfully Updated!");
+                    alert.showAndWait();
+
+                    availableBShowBusData();
+                    availableBusReset();
+                    
+                } else {
+                    return;
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void availableBusReset() {
+
+        availableB_busID.setText("");
+        availableB_location.setText("");
+        availableB_status.getSelectionModel().clearSelection();
+        availableB_price.setText("");
+        availableB_date.setValue(null);
+
+    }
+    
+    
+    private String[] statusList = {"Available", "Not Available"};
+
+    public void comboBoxStatus() {
+
+        List<String> listS = new ArrayList<>();
+
+        for (String data : statusList) {
+            listS.add(data);
+        }
+
+        ObservableList listStatus = FXCollections.observableArrayList(listS);
+        availableB_status.setItems(listStatus);
+
+    }
+    
+    
     
     public ObservableList<busData> availableBusBusData() {
 
@@ -289,7 +454,36 @@ public class DashboardController implements Initializable {
 
     }
     
+    private ObservableList<busData> availableBBusListData;
+    public void availableBShowBusData() {
+
+        availableBBusListData = availableBusBusData();
+
+        availableB_col_busID.setCellValueFactory(new PropertyValueFactory<>("busId"));
+        availableB_col_location.setCellValueFactory(new PropertyValueFactory<>("location"));
+        availableB_col_status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        availableB_col_price.setCellValueFactory(new PropertyValueFactory<>("price"));
+        availableB_col_date.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        availableB_tableView.setItems(availableBBusListData);
+
+    }
     
+      public void avaialbleBSelectBusData() {
+
+        busData busD = availableB_tableView.getSelectionModel().getSelectedItem();
+        int num = availableB_tableView.getSelectionModel().getSelectedIndex();
+
+        if ((num - 1) < -1) {
+            return;
+        }
+
+        availableB_busID.setText(String.valueOf(busD.getBusId()));
+        availableB_location.setText(busD.getLocation());
+        availableB_price.setText(String.valueOf(busD.getPrice()));
+        availableB_date.setValue(LocalDate.parse(String.valueOf(busD.getDate())));
+
+    }
     
     private double x = 0;
     private double y = 0;
@@ -354,6 +548,8 @@ public class DashboardController implements Initializable {
             availableB_form.setVisible(true);
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(false);
+            
+            availableBShowBusData();
              
          
         }else if (event.getSource() == bookingTicket_Btn){ 
@@ -387,6 +583,8 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        comboBoxStatus();
+        availableBShowBusData();
     }    
     
 }
