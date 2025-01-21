@@ -257,7 +257,7 @@
                                  </children>
                               </AnchorPane>
                            </children></AnchorPane>
-                        <AnchorPane fx:id="bookingTicket_form" prefHeight="497.6" prefWidth="908.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="bookingTicket_form" prefHeight="497.6" prefWidth="908.8" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane prefHeight="174.0" prefWidth="887.0" stylesheets="@DashboardDesign.css">
                                  <styleClass>
@@ -407,20 +407,20 @@
                                           <Font name="Arial" size="21.0" />
                                        </font>
                                     </Label>
-                                    <Button fx:id="bookingTicket_sci_pay" layoutX="741.0" layoutY="230.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="98.0" styleClass="Pay-btn" stylesheets="@DashboardDesign.css" text="Pay" />
+                                    <Button fx:id="bookingTicket_sci_pay" layoutX="741.0" layoutY="230.0" mnemonicParsing="false" onAction="#bookingTicketPay" prefHeight="58.0" prefWidth="98.0" styleClass="Pay-btn" stylesheets="@DashboardDesign.css" text="Pay" />
                                     <Button fx:id="bookingTicket_sci_receipt" layoutX="630.0" layoutY="230.0" mnemonicParsing="false" prefHeight="58.0" prefWidth="98.0" styleClass="receipt-btn" stylesheets="@DashboardDesign.css" text="Receipt" />
                                  </children>
                               </AnchorPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="customer_Form" layoutX="125.0" layoutY="48.0" prefHeight="497.6" prefWidth="908.8" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane fx:id="customer_Form" layoutX="125.0" layoutY="48.0" prefHeight="497.6" prefWidth="908.8" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane layoutX="5.0" layoutY="14.0" prefHeight="461.0" prefWidth="897.0" stylesheets="@DashboardDesign.css">
                                  <children>
                                     <TableView fx:id="customers_tableView" layoutX="7.0" layoutY="42.0" prefHeight="406.0" prefWidth="881.0" stylesheets="@DashboardDesign.css">
                                       <columns>
                                         <TableColumn fx:id="customers_customerNum" prefWidth="139.99995708465576" text="Customer #" />
-                                        <TableColumn fx:id="customers_ticketNum" prefWidth="62.399993896484375" text="Ticket #" />
+                                        <TableColumn fx:id="customers_ticketNum" prefWidth="62.399993896484375" text="Seat #" />
                                           <TableColumn fx:id="customers_firstName" prefWidth="70.40000915527344" text="First Name" />
                                           <TableColumn fx:id="customers_lastName" prefWidth="105.59994506835938" text="Last Name" />
                                           <TableColumn fx:id="customers_gender" prefWidth="72.79998779296875" text="Gender" />
@@ -431,7 +431,7 @@
                                           <TableColumn fx:id="customers_date" prefWidth="85.60003662109375" text="Date" />
                                       </columns>
                                     </TableView>
-                                    <TextField fx:id="customers_search" layoutX="14.0" layoutY="8.0" prefHeight="26.0" prefWidth="274.0" promptText="Search" styleClass="search" stylesheets="@DashboardDesign.css" />
+                                    <TextField fx:id="customers_search" layoutX="14.0" layoutY="8.0" onKeyTyped="#customersSearch" prefHeight="26.0" prefWidth="274.0" promptText="Search" styleClass="search" stylesheets="@DashboardDesign.css" />
                                  </children>
                                  <styleClass>
                                     <String fx:value="white-bg" />

@@ -198,40 +198,40 @@ public class DashboardController implements Initializable {
     private Button customers_Btn;
 
     @FXML
-    private TableColumn<?, ?> customers_busID;
+    private TableColumn<customerData,String> customers_busID;
 
     @FXML
-    private TableColumn<?, ?> customers_customerNum;
+    private TableColumn<customerData,String> customers_customerNum;
 
     @FXML
-    private TableColumn<?, ?> customers_date;
+    private TableColumn<customerData,String> customers_date;
 
     @FXML
-    private TableColumn<?, ?> customers_firstName;
+    private TableColumn<customerData,String> customers_firstName;
 
     @FXML
-    private TableColumn<?, ?> customers_gender;
+    private TableColumn<customerData,String> customers_gender;
 
     @FXML
-    private TableColumn<?, ?> customers_lastName;
+    private TableColumn<customerData,String> customers_lastName;
 
     @FXML
-    private TableColumn<?, ?> customers_location;
+    private TableColumn<customerData,String> customers_location;
 
     @FXML
-    private TableColumn<?, ?> customers_phoneNum;
+    private TableColumn<customerData,String> customers_phoneNum;
 
     @FXML
     private TextField customers_search;
 
     @FXML
-    private TableView<?> customers_tableView;
+    private TableView<customerData> customers_tableView;
 
     @FXML
-    private TableColumn<?, ?> customers_ticketNum;
+    private TableColumn<customerData,String> customers_ticketNum;
 
     @FXML
-    private TableColumn<?, ?> customers_type;
+    private TableColumn<customerData,String> customers_type;
 
     @FXML
     private Button dashboard_Btn;
@@ -561,9 +561,9 @@ public class DashboardController implements Initializable {
                 }
                 
                 String searchKey = newValue.toLowerCase();
-//                NOTHING? THEN WE NEED TO DO THIS FIRST
+
                 if(predicateBusData.getBusId().toString().contains(searchKey)){
-//                    NOTE, IF INTEGER OR IF THE DATA TYPE IS NOT STRING, YOU MUST BE DO toString()
+
                     return true;
                 }else if(predicateBusData.getLocation().toLowerCase().contains(searchKey)){
                     return true;
@@ -604,7 +604,7 @@ public class DashboardController implements Initializable {
             }
             bookingTicket_busId.setItems(listB);
             
-            //ticketNumList();
+            ticketNumList();
             
         }catch(Exception e){e.printStackTrace();}
         
@@ -649,20 +649,32 @@ public class DashboardController implements Initializable {
         
     }
       
-       public void ticketNumList(){
+     public void ticketNumList(){
         List<String> listTicket = new ArrayList<>();
         for(int q = 1; q <= 40; q++){
             listTicket.add(String.valueOf(q));
         }
+//        40 ARE OUR CAPACITY SEATS
 
+        String removeSeat = "SELECT seatNum FROM customer WHERE bus_id='"
+                +bookingTicket_busId.getSelectionModel().getSelectedItem()+"'";
 
+        connect = database.connectDb();
+        
+        try{
+            prepare = connect.prepareStatement(removeSeat);
+            result = prepare.executeQuery();
+            
+            while(result.next()){
+                listTicket.remove(result.getString("seatNum"));
+            }
             
             ObservableList listTi = FXCollections.observableArrayList(listTicket);
             
             bookingTicket_ticketNum.setItems(listTi);
 
-        
-    }  
+        }catch(Exception e){e.printStackTrace();}
+    }
     
        
        
@@ -766,8 +778,221 @@ public class DashboardController implements Initializable {
     }
     
     
-    
+    private int countRow;
+    public void bookingTicketPay(){
+        
+        String firstName = bookingTicket_sci_firstName.getText();
+        String lastName = bookingTicket_sci_lastName.getText();
+        String gender = bookingTicket_sci_gender.getText();
+        String phoneNumber = bookingTicket_sci_phoneNum.getText();
+        String date = bookingTicket_sci_date.getText();
+        
+        String busId = bookingTicket_sci_busID.getText();
+        String location = bookingTicket_sci_location.getText();
+        String type = bookingTicket_sci_type.getText();
+        String seatNum = bookingTicket_sci_ticketNum.getText();
+        
+        String payData = "INSERT INTO customer (customer_id,firstName,lastName,gender,phoneNumber,bus_id,location,type,seatNum,total,date)"
+                + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        
+        connect = database.connectDb();
+        
+        try{
+            
+            Alert alert;
+            
+            String countNum = "SELECT COUNT(id) FROM customer";
+            statement = connect.createStatement();
+            result = statement.executeQuery(countNum);
+            
+            while(result.next()){
+                countRow = result.getInt("COUNT(id)");
+            }
+            
+
+            if(bookingTicket_sci_firstName.getText().isEmpty()
+                    || bookingTicket_sci_lastName.getText().isEmpty()
+                    || bookingTicket_sci_gender.getText().isEmpty()
+                    || bookingTicket_sci_phoneNum.getText().isEmpty()
+                    || bookingTicket_sci_date.getText().isEmpty()
+                    || bookingTicket_sci_busID.getText().isEmpty()
+                    || bookingTicket_sci_location.getText().isEmpty()
+                    || bookingTicket_sci_type.getText().isEmpty()
+                    || bookingTicket_sci_ticketNum.getText().isEmpty()
+                    || totalP == 0){
+                
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Please select the information first");
+                alert.showAndWait();
+                
+            }else{
+            
+                alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Are you sure?");
+                alert.showAndWait();
+//                WE NEED TO REMOVE THE SEAT# IF THE CUSTOMER IS ALREADY CHOSE THAT 
+                prepare = connect.prepareStatement(payData);
+                prepare.setString(1, String.valueOf(countRow+1));
+                prepare.setString(2, firstName);
+                prepare.setString(3, lastName);
+                prepare.setString(4, gender);
+                prepare.setString(5, phoneNumber);
+                prepare.setString(6, busId);
+                prepare.setString(7, location);
+                prepare.setString(8, type);
+                prepare.setString(9, seatNum);
+                prepare.setString(10, String.valueOf(totalP));
+                prepare.setString(11, date);
+                
+                prepare.executeUpdate();
+                
+                String receiptData = "INSERT INTO customer_receipt (customer_id,total,date) VALUES(?,?,?)";
+                
+                getData.number = (countRow + 1);
+                
+                prepare = connect.prepareStatement(receiptData);
+                prepare.setString(1, String.valueOf(countRow+1));
+                prepare.setString(2, String.valueOf(totalP));
+                prepare.setString(3, date);
+                
+                prepare.executeUpdate();
+                
+                alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Information Message");
+                alert.setHeaderText(null);
+                alert.setContentText("Successful!");
+                alert.showAndWait();
+
+                bookingTicket_sci_firstName.setText("");
+                bookingTicket_sci_lastName.setText("");
+                bookingTicket_sci_gender.setText("");
+                bookingTicket_sci_phoneNum.setText("");
+                bookingTicket_sci_date.setText("");
+                bookingTicket_sci_busID.setText("");
+                bookingTicket_sci_location.setText("");
+                bookingTicket_sci_type.setText("");
+                bookingTicket_sci_ticketNum.setText("");
+                bookingTicket_sci_total.setText("৳0.0");
+ 
+            }
+        }catch(Exception e){e.printStackTrace();}
+    } 
       
+    
+      public ObservableList<customerData> customersDataList(){
+        
+        ObservableList<customerData> customerList = FXCollections.observableArrayList();
+        
+        String sql = "SELECT * FROM customer";
+        
+        connect = database.connectDb();
+        
+        try{
+            
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+            
+            customerData custD;
+            
+            while(result.next()){
+                
+                custD = new customerData(result.getInt("customer_id")
+                        , result.getString("firstName")
+                        , result.getString("lastName")
+                        , result.getString("gender")
+                        , result.getString("phoneNumber")
+                        , result.getInt("bus_id")
+                        , result.getString("location")
+                        , result.getString("type")
+                        , result.getInt("seatNum")
+                        , result.getDouble("total")
+                        , result.getDate("date"));
+                
+                customerList.add(custD);
+                
+            }
+            
+        }catch(Exception e){e.printStackTrace();}
+        return customerList;
+    }
+    
+    private ObservableList<customerData> customersDataL;
+    public void customersShowDataList(){
+        
+        customersDataL = customersDataList();
+        
+        customers_customerNum.setCellValueFactory(new PropertyValueFactory<>("customerNum"));
+        customers_ticketNum.setCellValueFactory(new PropertyValueFactory<>("seatNum"));
+        customers_firstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        customers_lastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        customers_phoneNum.setCellValueFactory(new PropertyValueFactory<>("phoneNum"));
+        customers_gender.setCellValueFactory(new PropertyValueFactory<>("gender"));
+        customers_busID.setCellValueFactory(new PropertyValueFactory<>("busId"));
+        customers_location.setCellValueFactory(new PropertyValueFactory<>("location"));
+        customers_type.setCellValueFactory(new PropertyValueFactory<>("type"));
+        customers_date.setCellValueFactory(new PropertyValueFactory<>("date"));
+        
+        customers_tableView.setItems(customersDataL);
+        
+    }
+    
+    
+       public void customersSearch(){
+        
+        FilteredList<customerData> filter = new FilteredList<>(customersDataL, e-> true);
+        
+        customers_search.textProperty().addListener((Observable, oldValue, newValue) ->{
+            
+            filter.setPredicate(predicateCustomerData ->{
+                
+                if(newValue == null || newValue.isEmpty()){
+                    return true;
+                }
+                
+                String searchKey = newValue.toLowerCase();
+                
+                if(predicateCustomerData.getCustomerNum().toString().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getSeatNum().toString().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getFirstName().toLowerCase().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getLastName().toLowerCase().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getGender().toLowerCase().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getPhoneNum().toLowerCase().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getBusId().toString().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getLocation().toLowerCase().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getTotal().toString().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getType().toLowerCase().contains(searchKey)){
+                    return true;
+                }else if(predicateCustomerData.getDate().toString().contains(searchKey)){
+                    return true;
+                }else return false;
+                
+            });
+        });
+        
+        SortedList<customerData> sortList = new SortedList<>(filter);
+        
+        sortList.comparatorProperty().bind(customers_tableView.comparatorProperty());
+        customers_tableView.setItems(sortList);
+    }
+    
+    
+    
+    
+    
+    
       
     
     private double x = 0;
@@ -853,11 +1078,38 @@ public class DashboardController implements Initializable {
             availableB_form.setVisible(false);
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(true);
-                       
+                    customersShowDataList();    
         
         }
      
     }
+    
+    
+     private int countAB = 0;
+    public void dashboardDisplayAB(){
+        
+        String sql = "SELECT COUNT(id) FROM bus WHERE status = 'Available'";
+        
+        connect = database.connectDb();
+        
+        try{
+            
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+            
+            while(result.next()){
+                countAB = result.getInt("COUNT(id)");
+            }
+            
+            dashboard_availableB.setText(String.valueOf(countAB));
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+    
+    
+    
+    
     
     
     public void close(){ 
@@ -872,6 +1124,8 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        
+        dashboardDisplayAB();
         comboBoxStatus();
         availableBShowBusData();
         busIdList();
@@ -879,6 +1133,7 @@ public class DashboardController implements Initializable {
         typeList();
         ticketNumList();
         genderList();
+         customersShowDataList();
     }    
     
 }
