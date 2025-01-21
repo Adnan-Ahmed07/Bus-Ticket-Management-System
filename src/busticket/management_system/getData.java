@@ -14,5 +14,13 @@ public class getData {
     
     public static Integer number;
     public static String username;
+    public static String location;
+    public static String price;
+    public static String firstName;
+    public static String lastName;
+    public static String type;
+    public static String gender;
+    public static String phoneNum;
+    
     
 }

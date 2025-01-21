@@ -3,6 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package busticket.management_system;
+
+
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -10,6 +14,7 @@ import java.sql.ResultSet;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -24,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -265,6 +271,7 @@ public class DashboardController implements Initializable {
     private ResultSet result;
     private Statement statement;
     
+    @FXML
     public void availableBusAdd() { 
     
     String addData = "INSERT INTO bus (bus_id,location,status,price,date) VALUES(?,?,?,?,?)";
@@ -337,6 +344,7 @@ public class DashboardController implements Initializable {
     
     }
     
+    @FXML
      public void availableBusUpdate() {
 
         String updateData = "UPDATE bus SET location = '"
@@ -398,6 +406,7 @@ public class DashboardController implements Initializable {
     }
      
      
+    @FXML
       public void availableBusDelete(){
         
         String deleteData = "DELETE FROM bus WHERE bus_id = '"
@@ -455,6 +464,7 @@ public class DashboardController implements Initializable {
      
      
      
+    @FXML
     public void availableBusReset() {
 
         availableB_busID.setText("");
@@ -468,6 +478,7 @@ public class DashboardController implements Initializable {
     
     private String[] statusList = {"Available", "Not Available"};
 
+    @FXML
     public void comboBoxStatus() {
 
         List<String> listS = new ArrayList<>();
@@ -531,6 +542,7 @@ public class DashboardController implements Initializable {
 
     }
     
+    @FXML
       public void avaialbleBSelectBusData() {
 
         busData busD = availableB_tableView.getSelectionModel().getSelectedItem();
@@ -548,6 +560,7 @@ public class DashboardController implements Initializable {
     }
       
       
+    @FXML
        public void availableSearch(){
         
         FilteredList<busData> filter = new FilteredList<>(availableBBusListData, e-> true);
@@ -586,6 +599,7 @@ public class DashboardController implements Initializable {
       
       
        
+    @FXML
      public void busIdList(){
         
         String busD = "SELECT * FROM bus WHERE status = 'Available'";
@@ -649,6 +663,7 @@ public class DashboardController implements Initializable {
         
     }
       
+    @FXML
      public void ticketNumList(){
         List<String> listTicket = new ArrayList<>();
         for(int q = 1; q <= 40; q++){
@@ -681,6 +696,7 @@ public class DashboardController implements Initializable {
        
      private double priceData = 0;
     private double totalP = 0;
+    @FXML
     public void bookingTicketSelect(){
         
         String firstName = bookingTicket_firstName.getText();
@@ -753,6 +769,7 @@ public class DashboardController implements Initializable {
         }
     }   
        
+    @FXML
     public void bookingTicketReset(){
         
         bookingTicket_firstName.setText("");
@@ -764,6 +781,7 @@ public class DashboardController implements Initializable {
     }    
      private String[] genderL = {"Male","Female","Others"};
     
+    @FXML
     public void genderList(){
         
         List<String> listG = new ArrayList<>();
@@ -779,6 +797,7 @@ public class DashboardController implements Initializable {
     
     
     private int countRow;
+    @FXML
     public void bookingTicketPay(){
         
         String firstName = bookingTicket_sci_firstName.getText();
@@ -941,6 +960,7 @@ public class DashboardController implements Initializable {
     }
     
     
+    @FXML
        public void customersSearch(){
         
         FilteredList<customerData> filter = new FilteredList<>(customersDataL, e-> true);
@@ -986,6 +1006,7 @@ public class DashboardController implements Initializable {
         
         sortList.comparatorProperty().bind(customers_tableView.comparatorProperty());
         customers_tableView.setItems(sortList);
+        customers_tableView.refresh();
     }
     
     
@@ -997,6 +1018,7 @@ public class DashboardController implements Initializable {
     
     private double x = 0;
     private double y = 0;
+    @FXML
     public void logout() {
 
         try {
@@ -1045,13 +1067,17 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
     public void switchForm(ActionEvent event){ 
       if (event.getSource() == dashboard_Btn) {
            dashboard_form.setVisible(true);
             availableB_form.setVisible(false);
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(false);
-             
+              dashboardDisplayAB();
+               dashboardDisplayIT();
+               dashboardDisplayTI();
+               dashboardChart();
             
         }else if (event.getSource() == availableB_Btn){ 
             dashboard_form.setVisible(false);
@@ -1079,6 +1105,7 @@ public class DashboardController implements Initializable {
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(true);
                     customersShowDataList();    
+                    
         
         }
      
@@ -1107,14 +1134,89 @@ public class DashboardController implements Initializable {
         
     }
     
+     private double incomeToday = 0;
+    public void dashboardDisplayIT(){
+        
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        
+        String sql = "SELECT SUM(total) FROM customer WHERE date ='"+sqlDate+"'";
+        
+        connect = database.connectDb();
+        
+        try{
+            
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+            
+            while(result.next()){
+                incomeToday = result.getDouble("SUM(total)");
+            }
+            
+            dashboard_incomeToday.setText("Tk.৳"+String.valueOf(incomeToday));
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+    
+     private double totalIncome;
+    public void dashboardDisplayTI(){
+        
+        String sql = "SELECT SUM(total) FROM customer";
+        
+        connect = database.connectDb();
+        
+        try{
+            
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+            
+            while(result.next()){
+                totalIncome = result.getDouble("SUM(total)");
+            }
+            
+            dashboard_totalncome.setText("Tk.৳"+String.valueOf(totalIncome));
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
+    
+    
+     public void dashboardChart(){
+        
+        dashboard_chart.getData().clear();
+        
+        String sql = "SELECT date,SUM(total) FROM customer WHERE date != '' GROUP BY date ORDER BY TIMESTAMP(date) ASC LIMIT 9";
+        
+        connect = database.connectDb();
+        
+        XYChart.Series chart = new XYChart.Series();
+        
+        try{
+
+            
+            prepare = connect.prepareStatement(sql);
+            result = prepare.executeQuery();
+            
+            while(result.next()){
+                chart.getData().add(new XYChart.Data(result.getString(1), result.getInt(2)));
+            }
+            
+            dashboard_chart.getData().add(chart);
+            
+        }catch(Exception e){e.printStackTrace();}
+        
+    }
     
     
     
     
     
+    @FXML
     public void close(){ 
         System.exit(0);
     }
+    @FXML
     public void minimize(){ 
         Stage stage=(Stage)main_form.getScene().getWindow();
         stage.setIconified(true);
@@ -1126,6 +1228,9 @@ public class DashboardController implements Initializable {
         // TODO
         
         dashboardDisplayAB();
+        dashboardDisplayIT();
+        dashboardDisplayTI();
+        dashboardChart();
         comboBoxStatus();
         availableBShowBusData();
         busIdList();
@@ -1135,5 +1240,24 @@ public class DashboardController implements Initializable {
         genderList();
          customersShowDataList();
     }    
-    
+
+    @FXML
+    private void handlereviced(ActionEvent event) {
+        
+     ObservableList<customerData> list=customersDataList();
+        Pdf pdf = new Pdf();
+        customerData cs = null;
+    for(customerData fs:list){
+        cs = fs;
+ 
+
 }
+     pdf.addRow(cs.getSeatNum().toString(),cs.getFirstName(),cs.getLastName(),cs.getGender(),cs.getPhoneNum(),cs.getLocation(),cs.getType(),cs.getTotal().toString());
+    pdf.createPdf();
+                 
+    
+    } 
+
+
+}
+
