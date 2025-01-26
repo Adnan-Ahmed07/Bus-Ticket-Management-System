@@ -1,0 +1,2 @@
+E:\javafxproject\BusTicket-Management_System\src\image\logo.jpg
+E:\javafxproject\BusTicket-Management_System\src\busticket\management_system\Image

@@ -561,41 +561,50 @@ public class DashboardController implements Initializable {
       
       
     @FXML
-       public void availableSearch(){
-        
-        FilteredList<busData> filter = new FilteredList<>(availableBBusListData, e-> true);
-        
-        availableB_search.textProperty().addListener((Observable, oldValue, newValue) ->{
+
+  public void availableSearch() {
+    ObservableList<busData> tableData = availableB_tableView.getItems();
+
+    FilteredList<busData> filteredList = new FilteredList<>(tableData, e -> true);
+
+    availableB_search.textProperty().addListener((observable, oldValue, newValue) -> {
+        filteredList.setPredicate(bus -> {
             
-            filter.setPredicate(predicateBusData ->{
-                
-                if(newValue.isEmpty() || newValue == null){
-                    return true;
-                }
-                
-                String searchKey = newValue.toLowerCase();
+            if (newValue == null || newValue.isEmpty()) {
+                return true;
+            }
 
-                if(predicateBusData.getBusId().toString().contains(searchKey)){
+            String searchKey = newValue.toLowerCase();
 
-                    return true;
-                }else if(predicateBusData.getLocation().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateBusData.getStatus().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateBusData.getDate().toString().contains(searchKey)){
-                    return true;
-                }else if(predicateBusData.getPrice().toString().contains(searchKey)){
-                    return true;
-                }else return false;
-                
-            });
+            
+            if (bus.getBusId() != null && bus.getBusId().toString().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (bus.getLocation() != null && bus.getLocation().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (bus.getStatus() != null && bus.getStatus().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (bus.getDate() != null && bus.getDate().toString().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (bus.getPrice() != null && bus.getPrice().toString().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+
+            return false; 
         });
-        
-        SortedList<busData> sortList = new SortedList<>(filter);
-        
-        sortList.comparatorProperty().bind(availableB_tableView.comparatorProperty());
-        availableB_tableView.setItems(sortList);
-    }
+    });
+
+    SortedList<busData> sortedList = new SortedList<>(filteredList);
+    sortedList.comparatorProperty().bind(availableB_tableView.comparatorProperty());
+
+    availableB_tableView.setItems(sortedList);
+}
+
+   
+
       
       
        
@@ -961,53 +970,67 @@ public class DashboardController implements Initializable {
     
     
     @FXML
-       public void customersSearch(){
-        
-        FilteredList<customerData> filter = new FilteredList<>(customersDataL, e-> true);
-        
-        customers_search.textProperty().addListener((Observable, oldValue, newValue) ->{
+    public void customersSearch() {
+    ObservableList<customerData> tableData = customers_tableView.getItems();
+
+    FilteredList<customerData> filteredList = new FilteredList<>(tableData, e -> true);
+
+    customers_search.textProperty().addListener((observable, oldValue, newValue) -> {
+        filteredList.setPredicate(customer -> {
             
-            filter.setPredicate(predicateCustomerData ->{
-                
-                if(newValue == null || newValue.isEmpty()){
-                    return true;
-                }
-                
-                String searchKey = newValue.toLowerCase();
-                
-                if(predicateCustomerData.getCustomerNum().toString().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getSeatNum().toString().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getFirstName().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getLastName().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getGender().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getPhoneNum().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getBusId().toString().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getLocation().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getTotal().toString().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getType().toLowerCase().contains(searchKey)){
-                    return true;
-                }else if(predicateCustomerData.getDate().toString().contains(searchKey)){
-                    return true;
-                }else return false;
-                
-            });
+            if (newValue == null || newValue.isEmpty()) {
+                return true;
+            }
+
+            String searchKey = newValue.toLowerCase();
+
+            
+            if (customer.getCustomerNum() != null && customer.getCustomerNum().toString().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getSeatNum() != null && customer.getSeatNum().toString().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getFirstName() != null && customer.getFirstName().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getLastName() != null && customer.getLastName().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getGender() != null && customer.getGender().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getPhoneNum() != null && customer.getPhoneNum().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getBusId() != null && customer.getBusId().toString().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getLocation() != null && customer.getLocation().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getTotal() != null && customer.getTotal().toString().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getType() != null && customer.getType().toLowerCase().contains(searchKey)) {
+                return true;
+            }
+            if (customer.getDate() != null && customer.getDate().toString().contains(searchKey)) {
+                return true;
+            }
+
+            return false; // No match
         });
-        
-        SortedList<customerData> sortList = new SortedList<>(filter);
-        
-        sortList.comparatorProperty().bind(customers_tableView.comparatorProperty());
-        customers_tableView.setItems(sortList);
-        customers_tableView.refresh();
-    }
+    });
+
+    SortedList<customerData> sortedList = new SortedList<>(filteredList);
+    sortedList.comparatorProperty().bind(customers_tableView.comparatorProperty());
+
+    customers_tableView.setItems(sortedList);
+}
+
+    
+
     
     
     
