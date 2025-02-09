@@ -27,7 +27,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
@@ -44,8 +43,19 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
 
 /**
  * FXML Controller class
@@ -270,6 +280,12 @@ public class DashboardController implements Initializable {
     private PreparedStatement prepare;
     private ResultSet result;
     private Statement statement;
+    @FXML
+    private Button reciptBtn;
+    @FXML
+    private AnchorPane ReciptAd;
+    @FXML
+    private ImageView reciptAdpdf;
     
     @FXML
     public void availableBusAdd() { 
@@ -1029,16 +1045,6 @@ public class DashboardController implements Initializable {
     customers_tableView.setItems(sortedList);
 }
 
-    
-
-    
-    
-    
-    
-    
-    
-      
-    
     private double x = 0;
     private double y = 0;
     @FXML
@@ -1091,12 +1097,14 @@ public class DashboardController implements Initializable {
         }
     }
     @FXML
-    public void switchForm(ActionEvent event){ 
+    public void switchForm(ActionEvent event) throws IOException{ 
       if (event.getSource() == dashboard_Btn) {
            dashboard_form.setVisible(true);
             availableB_form.setVisible(false);
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(false);
+            ReciptAd.setVisible(false);
+            
               dashboardDisplayAB();
                dashboardDisplayIT();
                dashboardDisplayTI();
@@ -1107,6 +1115,7 @@ public class DashboardController implements Initializable {
             availableB_form.setVisible(true);
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(false);
+           ReciptAd.setVisible(false);
             
             availableBShowBusData();
              availableSearch();
@@ -1116,6 +1125,7 @@ public class DashboardController implements Initializable {
             availableB_form.setVisible(false);
             bookingTicket_form.setVisible(true);
             customer_Form.setVisible(false);
+            ReciptAd.setVisible(false);
                     busIdList();
                     LocationList();
                     typeList();
@@ -1127,9 +1137,19 @@ public class DashboardController implements Initializable {
             availableB_form.setVisible(false);
             bookingTicket_form.setVisible(false);
             customer_Form.setVisible(true);
-                    customersShowDataList();    
+            ReciptAd.setVisible(false);
+                    customersShowDataList(); 
+                   
                     
         
+        } else if(event.getSource() == reciptBtn){
+                   dashboard_form.setVisible(false);
+            availableB_form.setVisible(false);
+            bookingTicket_form.setVisible(false);
+            customer_Form.setVisible(false);
+            ReciptAd.setVisible(true);
+            handleRecipt(event);
+            
         }
      
     }
@@ -1280,6 +1300,18 @@ public class DashboardController implements Initializable {
                  
     
     } 
+
+   
+    private void handleRecipt(ActionEvent event) throws IOException {
+        String dest = new File("").getAbsolutePath()+" output.pdf" ;
+        File file = new File(dest);  // Replace with your PDF file path
+        PDDocument document = Loader.loadPDF(file);
+        PDFRenderer renderer = new PDFRenderer(document);
+        
+        BufferedImage bufferedImage = renderer.renderImage(0); // Render first page
+        Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+        reciptAdpdf.setImage(image);
+    }
 
 
 }
