@@ -9,6 +9,4 @@
 
 ![Screenshot_275](https://github.com/user-attachments/assets/bd640112-986a-4f8f-8286-5c57234d050a)
 
-login is connected in Database now
-Dashboard Working Perfectly 
-but Stil lot of work to do
+A DeskTop Application
